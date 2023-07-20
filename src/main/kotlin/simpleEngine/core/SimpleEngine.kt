@@ -14,27 +14,16 @@ class SimpleEngine(
     private val windowTitle:String,
     private val windowOptions: Window.WindowOptions,
     private val gameLogic : GameLogic
-) : Runnable{
-
-    companion object{
-        const val TARGET_UPS = 30
-    }
+){
 
     private var targetFps = windowOptions.fps
-    private var targetUps = TARGET_UPS
     private var running = false
-    /*private val scene: Scene
-    private val renderer: Renderer*/
     private val window: Window
 
     init {
 
         window = Window(windowTitle, windowOptions)
         targetFps = windowOptions.fps
-        targetUps = windowOptions.ups
-
-        /*scene = Scene(window.width,window.height)
-        renderer = Renderer()*/
 
         gameLogic.init(window)
         running = true
@@ -49,39 +38,19 @@ class SimpleEngine(
      * The main game loop
      * responsible for  the input, update and the rendering
      */
-    override  fun run(){
+    fun run(){
 
-        var initialTime = System.currentTimeMillis()
-        val timeU = 1000.0f / targetUps // time per update
-        val timeR: Float = if (targetFps > 0) 1000.0f / targetFps else 0F // time per render
-        var deltaUpdate = 0f
-        var deltaFps = 0f
-
-        var updateTime = initialTime
         while (running && !window.shouldClose()) {
 
-            //TODO: window.pollEvents()
-
-            val now = System.currentTimeMillis()
-
-            deltaUpdate += (now - initialTime) / timeU
-            deltaFps += (now - initialTime) / timeR
-
-            if (targetFps <= 0 || deltaFps >= 1) {
-                gameLogic.input(window, now - initialTime)
-            }
-            if (deltaUpdate >= 1) {
-                val diffTimeMillis = now - updateTime
-                gameLogic.update(window,  diffTimeMillis)
-                updateTime = now
-                deltaUpdate--
-            }
-            if (targetFps <= 0 || deltaFps >= 1) {
-                /*renderer.render(window, scene)*/
-                deltaFps--
+            if(windowOptions.fps > 0){
+                val timePerFrame = 1.0 / targetFps * 1000000000
+                val now = System.nanoTime()
+                while (System.nanoTime() - now < timePerFrame) {
+                    //wait
+                }
                 window.update()
+                gameLogic.update(window, 1)
             }
-            initialTime = now
         }
 
         cleanup()

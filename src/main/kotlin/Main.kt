@@ -1,7 +1,9 @@
+import org.joml.Vector3f
 import simpleEngine.core.GameLogic
 import simpleEngine.core.Window
 import simpleEngine.scene.Loader
 import simpleEngine.core.SimpleEngine
+import simpleEngine.entity.Entity
 import simpleEngine.models.RawModel
 import simpleEngine.models.TexturedModel
 import simpleEngine.scene.Renderer
@@ -9,7 +11,7 @@ import simpleEngine.shader.StaticShader
 import simpleEngine.texture.ModelTexture
 
 fun main() {
-    SimpleEngine("Simple Engine", Window.WindowOptions(800, 600, 60, 30), MyGame()).run()
+    SimpleEngine("Simple Engine", Window.WindowOptions(800, 600, 60), MyGame()).run()
 }
 
 class MyGame: GameLogic(){
@@ -20,6 +22,7 @@ class MyGame: GameLogic(){
     private lateinit var model: RawModel
     private lateinit var modelTexture:ModelTexture
     private lateinit var texturedModel: TexturedModel
+    private lateinit var entity: Entity
 
 
     /*val vertices = floatArrayOf(
@@ -69,6 +72,7 @@ class MyGame: GameLogic(){
         model = loader.loadToVAO(vertices,indices,textureCoords)
         modelTexture = ModelTexture(loader.loadTexture("brick"))
         texturedModel = TexturedModel(model,modelTexture)
+        entity = Entity(texturedModel, Vector3f(0f,0f,0f), Vector3f(0f,0f,0f), 1f)
 
     }
 
@@ -76,9 +80,10 @@ class MyGame: GameLogic(){
     }
 
     override fun update(window: Window, diffTimeMillis: Long) {
+        entity.changeRotation(0f,1f,0f)
         renderer.prepare()
         staticShader.start()
-        renderer.render(texturedModel)
+        renderer.render(entity,staticShader)
         staticShader.stop()
     }
 

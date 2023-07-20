@@ -30,11 +30,34 @@ abstract class ShaderProgram(
         GL30.glValidateProgram(programID)
     }
 
-    abstract fun bindAttributes()
+    protected abstract fun bindAttributes()
 
     fun bindAttribute(attribute:Int,variableName:String){
         GL30.glBindAttribLocation(programID,attribute,variableName)
     }
+
+    fun getUniformLocation(uniformName:String):Int{
+        return GL30.glGetUniformLocation(programID,uniformName)
+    }
+
+    protected fun loadFloat(location:Int,value:Float){
+        GL30.glUniform1f(location,value)
+    }
+
+    protected fun loadVector(location:Int,vector:Vector3f){
+        GL30.glUniform3f(location,vector.x,vector.y,vector.z)
+    }
+
+    protected fun loadBoolean(location:Int,value:Boolean){
+        val toLoad = if(value) 1f else 0f
+        GL30.glUniform1f(location,toLoad)
+    }
+
+    protected fun loadMatrix(location:Int,matrix:Matrix4f){
+        matrix.get(matrixBuffer)
+        GL30.glUniformMatrix4fv(location,false,matrixBuffer)
+    }
+
 
     fun start(){
         GL30.glUseProgram(programID)

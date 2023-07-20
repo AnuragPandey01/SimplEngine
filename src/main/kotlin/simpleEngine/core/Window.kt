@@ -155,10 +155,7 @@ class Window (
     data class WindowOptions(
         var width:Int = 800,
         var height:Int = 600,
-        var fps: Int = 0,
-        var ups: Int = SimpleEngine.TARGET_UPS
+        var fps: Int = 0
     )
-
-
 
 }
