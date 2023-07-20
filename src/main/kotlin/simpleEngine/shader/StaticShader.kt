@@ -1,14 +1,12 @@
 package simpleEngine.shader
 
 class StaticShader: ShaderProgram(
-    vertexFile = "E:\\lwjgl\\simpleEngine\\SimpleEngine\\src\\main\\resources\\vertShader.vert",
-    fragmentFile = "E:\\lwjgl\\simpleEngine\\SimpleEngine\\src\\main\\resources\\fargShader.frag"
+    vertexFile = "src/main/resources/vertShader.vert",
+    fragmentFile = "src/main/resources/fragShader.frag"
 ) {
-
-
     override fun bindAttributes() {
-        super.bindAttribute(0,"position")
+        super.bindAttribute(0, "position")
+        super.bindAttribute(1, "textureCoords")
     }
-
 
 }

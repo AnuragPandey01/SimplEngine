@@ -1,5 +1,8 @@
 package simpleEngine.shader
 
+import org.joml.Matrix4f
+import org.joml.Vector3f
+import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11.GL_FALSE
 import org.lwjgl.opengl.GL20
 import org.lwjgl.opengl.GL30
@@ -13,6 +16,7 @@ abstract class ShaderProgram(
     private val vertexShaderID :Int
     private val fragmentShaderID :Int
     private val programID : Int
+    private val matrixBuffer = BufferUtils.createFloatBuffer(16)
 
     init {
 
@@ -21,9 +25,9 @@ abstract class ShaderProgram(
         fragmentShaderID = loadShader(fragmentFile,GL30.GL_FRAGMENT_SHADER)
         GL30.glAttachShader(programID,vertexShaderID)
         GL30.glAttachShader(programID,fragmentShaderID)
+        bindAttributes()
         GL30.glLinkProgram(programID)
         GL30.glValidateProgram(programID)
-        bindAttributes()
     }
 
     abstract fun bindAttributes()

@@ -2,8 +2,11 @@ import simpleEngine.core.GameLogic
 import simpleEngine.core.Window
 import simpleEngine.scene.Loader
 import simpleEngine.core.SimpleEngine
+import simpleEngine.models.RawModel
+import simpleEngine.models.TexturedModel
 import simpleEngine.scene.Renderer
 import simpleEngine.shader.StaticShader
+import simpleEngine.texture.ModelTexture
 
 fun main() {
     SimpleEngine("Simple Engine", Window.WindowOptions(800, 600, 60, 30), MyGame()).run()
@@ -14,6 +17,10 @@ class MyGame: GameLogic(){
     private lateinit var renderer: Renderer
     private lateinit var loader: Loader
     private lateinit var staticShader: StaticShader
+    private lateinit var model: RawModel
+    private lateinit var modelTexture:ModelTexture
+    private lateinit var texturedModel: TexturedModel
+
 
     /*val vertices = floatArrayOf(
         // Left bottom triangle
@@ -38,6 +45,13 @@ class MyGame: GameLogic(){
         3, 1, 2 // Bottom right triangle (V3, V1, V2)
     )
 
+    val textureCoords = floatArrayOf(
+        0f, 0f, // V0
+        0f, 1f, // V1
+        1f, 1f, // V2
+        1f, 0f // V3
+    )
+
 
 
     override fun cleanup() {
@@ -52,16 +66,19 @@ class MyGame: GameLogic(){
         staticShader = StaticShader()
         renderer = Renderer()
         loader = Loader()
+        model = loader.loadToVAO(vertices,indices,textureCoords)
+        modelTexture = ModelTexture(loader.loadTexture("brick"))
+        texturedModel = TexturedModel(model,modelTexture)
+
     }
 
     override fun input(window: Window, diffTimeMillis: Long) {
     }
 
     override fun update(window: Window, diffTimeMillis: Long) {
-        val model = loader.loadToVAO(vertices,indices)
         renderer.prepare()
         staticShader.start()
-        renderer.render(model)
+        renderer.render(texturedModel)
         staticShader.stop()
     }
 
