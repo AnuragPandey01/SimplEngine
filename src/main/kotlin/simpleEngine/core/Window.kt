@@ -4,8 +4,8 @@ import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT
-import org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT
+import org.lwjgl.opengl.GL11.*
+import org.lwjgl.opengl.GL30
 import org.lwjgl.system.MemoryUtil
 
 
@@ -101,6 +101,7 @@ class Window (
         //sets initial screen color
         GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
 
+
         //make the window visible
         glfwShowWindow(window)
 
@@ -122,8 +123,11 @@ class Window (
     }
 
     fun update(){
-        GL11.glClear(GL_COLOR_BUFFER_BIT and GL_DEPTH_BUFFER_BIT) // clear the framebuffer
+
         glfwSwapBuffers(window)
+        GL11.glEnable(GL11.GL_DEPTH_TEST)
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT or GL11.GL_DEPTH_BUFFER_BIT)
+        GL30.glClearColor(1f, 0f, 0f, 1f)
 
         // Poll for window events. The key callback above will only be
         // invoked during this call.

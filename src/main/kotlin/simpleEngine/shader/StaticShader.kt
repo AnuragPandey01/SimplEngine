@@ -22,7 +22,8 @@ class StaticShader: ShaderProgram(
     }
 
    fun setUniform(name:String,value:Matrix4f){
-       super.loadMatrix(uniformLocations[name]!!,value)
+       val location = uniformLocations[name] ?: throw RuntimeException("Could not find uniform [$name] in shader program")
+       super.loadMatrix(location,value)
    }
 
 }

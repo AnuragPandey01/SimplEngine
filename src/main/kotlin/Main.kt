@@ -1,4 +1,5 @@
 import org.joml.Vector3f
+import simpleEngine.camera.Camera
 import simpleEngine.core.GameLogic
 import simpleEngine.core.Window
 import simpleEngine.scene.Loader
@@ -11,7 +12,7 @@ import simpleEngine.shader.StaticShader
 import simpleEngine.texture.ModelTexture
 
 fun main() {
-    SimpleEngine("Simple Engine", Window.WindowOptions(800, 600, 60), MyGame()).run()
+    SimpleEngine("Simple Engine", Window.WindowOptions(800, 800, 60), MyGame()).run()
 }
 
 class MyGame: GameLogic(){
@@ -23,36 +24,81 @@ class MyGame: GameLogic(){
     private lateinit var modelTexture:ModelTexture
     private lateinit var texturedModel: TexturedModel
     private lateinit var entity: Entity
+    private lateinit var camera: Camera
 
-
-    /*val vertices = floatArrayOf(
-        // Left bottom triangle
-        -0.5f, 0.5f, 0f, // V0
-        -0.5f, -0.5f, 0f, // V1
-        0.5f, -0.5f, 0f, // V2
-        // Right top triangle
-        0.5f, -0.5f, 0f, // V2
-        0.5f, 0.5f, 0f, // V3
-        -0.5f, 0.5f, 0f // V0
-    )*/
 
     val vertices = floatArrayOf(
-        -0.5f, 0.5f, 0f, // V0
-        -0.5f, -0.5f, 0f, // V1
-        0.5f, -0.5f, 0f, // V2
-        0.5f, 0.5f, 0f // V3
+        -0.5f,0.5f,-0.5f,
+        -0.5f,-0.5f,-0.5f,
+        0.5f,-0.5f,-0.5f,
+        0.5f,0.5f,-0.5f,
+
+        -0.5f,0.5f,0.5f,
+        -0.5f,-0.5f,0.5f,
+        0.5f,-0.5f,0.5f,
+        0.5f,0.5f,0.5f,
+
+        0.5f,0.5f,-0.5f,
+        0.5f,-0.5f,-0.5f,
+        0.5f,-0.5f,0.5f,
+        0.5f,0.5f,0.5f,
+
+        -0.5f,0.5f,-0.5f,
+        -0.5f,-0.5f,-0.5f,
+        -0.5f,-0.5f,0.5f,
+        -0.5f,0.5f,0.5f,
+
+        -0.5f,0.5f,0.5f,
+        -0.5f,0.5f,-0.5f,
+        0.5f,0.5f,-0.5f,
+        0.5f,0.5f,0.5f,
+
+        -0.5f,-0.5f,0.5f,
+        -0.5f,-0.5f,-0.5f,
+        0.5f,-0.5f,-0.5f,
+        0.5f,-0.5f,0.5f
     )
 
     val indices = intArrayOf(
-        0, 1, 3, // Top left triangle (V0, V1, V3)
-        3, 1, 2 // Bottom right triangle (V3, V1, V2)
+        0,1,3,
+        3,1,2,
+        4,5,7,
+        7,5,6,
+        8,9,11,
+        11,9,10,
+        12,13,15,
+        15,13,14,
+        16,17,19,
+        19,17,18,
+        20,21,23,
+        23,21,22
     )
 
     val textureCoords = floatArrayOf(
-        0f, 0f, // V0
-        0f, 1f, // V1
-        1f, 1f, // V2
-        1f, 0f // V3
+        0f,0f,
+        0f,1f,
+        1f,1f,
+        1f,0f,
+        0f,0f,
+        0f,1f,
+        1f,1f,
+        1f,0f,
+        0f,0f,
+        0f,1f,
+        1f,1f,
+        1f,0f,
+        0f,0f,
+        0f,1f,
+        1f,1f,
+        1f,0f,
+        0f,0f,
+        0f,1f,
+        1f,1f,
+        1f,0f,
+        0f,0f,
+        0f,1f,
+        1f,1f,
+        1f,0f
     )
 
 
@@ -67,12 +113,13 @@ class MyGame: GameLogic(){
         //please initialise components at init
         //can cause jdk exception otherwise
         staticShader = StaticShader()
-        renderer = Renderer()
+        camera = Camera(window)
+        renderer = Renderer(staticShader,camera)
         loader = Loader()
         model = loader.loadToVAO(vertices,indices,textureCoords)
         modelTexture = ModelTexture(loader.loadTexture("brick"))
         texturedModel = TexturedModel(model,modelTexture)
-        entity = Entity(texturedModel, Vector3f(0f,0f,0f), Vector3f(0f,0f,0f), 1f)
+        entity = Entity(texturedModel, Vector3f(0f,0f,-5f), Vector3f(0f,0f,0f), 1f)
 
     }
 
@@ -80,10 +127,10 @@ class MyGame: GameLogic(){
     }
 
     override fun update(window: Window, diffTimeMillis: Long) {
-        entity.changeRotation(0f,1f,0f)
-        renderer.prepare()
+        camera.move()
+        entity.changeRotation(1f,1f,0f)
         staticShader.start()
-        renderer.render(entity,staticShader)
+        renderer.render(entity)
         staticShader.stop()
     }
 

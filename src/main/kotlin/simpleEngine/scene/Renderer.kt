@@ -1,20 +1,27 @@
 package simpleEngine.scene
 
+import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL30
+import simpleEngine.camera.Camera
 import simpleEngine.entity.Entity
 import simpleEngine.models.RawModel
 import simpleEngine.models.TexturedModel
 import simpleEngine.shader.StaticShader
 import simpleEngine.utils.SimpleMaths
 
-class Renderer {
+class Renderer(
+    private val shader: StaticShader,
+    private val camera: Camera
+) {
 
-    fun prepare() {
-        GL30.glClear(GL30.GL_COLOR_BUFFER_BIT)
-        GL30.glClearColor(1f, 0f, 0f, 1f)
+    init {
+        shader.start()
+        shader.createUniform("pMatrix")
+        shader.setUniform("pMatrix",SimpleMaths.createProjectionMatrix())
+        shader.stop()
     }
 
-    fun render(entity: Entity, shader: StaticShader) {
+    fun render(entity: Entity) {
 
         val texturedModel = entity.model
         val model = texturedModel.rawModel
@@ -35,6 +42,8 @@ class Renderer {
             entity.scale
         )
         shader.setUniform("tMatrix",matrix)
+        shader.createUniform("vMatrix")
+        shader.setUniform("vMatrix",SimpleMaths.createViewMatrix(camera))
 
         GL30.glActiveTexture(GL30.GL_TEXTURE0)
         GL30.glBindTexture(GL30.GL_TEXTURE_2D,texturedModel.texture.textureID)
